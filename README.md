@@ -1,0 +1,1 @@
+# indico-plugin-payment-opencollective
