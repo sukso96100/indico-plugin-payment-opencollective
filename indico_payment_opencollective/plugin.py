@@ -27,7 +27,7 @@ class EventSettingsForm(PaymentEventSettingsFormBase):
     api_key = StringField('Open Collective API Key (Personal token)')
     use_staging = BooleanField('Use Staging server of Open Collective')
 
-class PaypalPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
+class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     """OpenCollective
 
     Provides a payment method using the OpenCollective Post donation redirect API.
@@ -53,7 +53,6 @@ class PaypalPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
 
     def init(self):
         super().init()
-        self.template_hook('event-manage-payment-plugin-before-form', self._get_encoding_warning)
 
     @property
     def logo_url(self):
@@ -86,7 +85,3 @@ class PaypalPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         
         data['payment_url'] = url
         
-
-    def _get_encoding_warning(self, plugin=None, event=None):
-        if plugin == self:
-            return render_plugin_template('event_settings_encoding_warning.html')
