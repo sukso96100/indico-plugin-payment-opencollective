@@ -12,7 +12,7 @@
     <dd>{{ format_currency(amount, currency, locale=session.lang) }}</dd>
     <dt></dt>
     <dd>
-        <a class="i-button" href="https://opencollective.com/{{event_settings.collective_slug}}{% if event_slug %}/events/{{event_slug}}{% endif %}/donate?interval=oneTime&amount=10&redirect={{redirect_url}}">
+        <a class="i-button" href="{{payment_url}}">
             {%- trans %}Pay Now{% endtrans -%}
         </a>
     </dd>

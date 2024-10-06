@@ -11,7 +11,9 @@ from indico.web.forms.validators import UsedIf
 
 from indico_payment_opencollective import _
 from indico_payment_opencollective.blueprint import blueprint
-from indico_payment_opencollective.util import validate_business
+
+OC_BASEURL = "https://opencollective.com"
+OC_STAGING_BASEURL = "https://staging.opencollective.com"
 
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
     collective_slug = StringField('Slug for Collective on Open Collective')
@@ -61,13 +63,29 @@ class PaypalPaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         return blueprint
 
     def adjust_payment_form_data(self, data):
+        url = "{{event_settings.collective_slug}}{% if event_slug %}/events/{{event_slug}}{% endif %}/donate?interval=oneTime&amount=10"
+        
         event = data['event']
         registration = data['registration']
+        event_settings = data=['event_settings']
         plain_name = str_to_ascii(remove_accents(registration.full_name))
         plain_title = str_to_ascii(remove_accents(event.title))
+        redirect_url = url_for_plugin('payment_opencollective.success', registration.locator.uuid, _external=True)
         data['item_name'] = f'{plain_name}: registration for {plain_title}'
-        data['redirect_url'] = url_for_plugin('payment_opencollective.success', registration.locator.uuid, _external=True)
         data['cancel_url'] = url_for_plugin('payment_opencollective.cancel', registration.locator.uuid, _external=True)
+
+        if event_settings['use_staging']:
+            url = f"{OC_STAGING_BASEURL}/{event_settings['collective_slug']}"
+        else:
+            url = f"{OC_BASEURL}/{event_settings['collective_slug']}"
+
+        if event_settings['event_slug']:
+            url += f"/events/{event_settings['event_slug']}"
+
+        url += f"/donate?interval=oneTime&amount={data['amount']}&redirect={redirect_url}"
+        
+        data['payment_url'] = url
+        
 
     def _get_encoding_warning(self, plugin=None, event=None):
         if plugin == self:
