@@ -66,7 +66,7 @@ class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         
         event = data['event']
         registration = data['registration']
-        event_settings = data=['event_settings']
+        event_settings = data['event_settings']
         plain_name = str_to_ascii(remove_accents(registration.full_name))
         plain_title = str_to_ascii(remove_accents(event.title))
         redirect_url = url_for_plugin('payment_opencollective.success', registration.locator.uuid, _external=True)
