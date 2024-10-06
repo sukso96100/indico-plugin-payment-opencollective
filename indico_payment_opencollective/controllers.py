@@ -92,7 +92,7 @@ class RHOpenCollectivePostPaymentRedirect(RH):
                 transaction.data['txn_id'] == request.form.get('txn_id'))
 
 
-class RHPaypalSuccess(RHOpenCollectivePostPaymentRedirect):
+class RHOpenCollectiveSuccess(RHOpenCollectivePostPaymentRedirect):
     """Confirmation message after successful payment"""
 
     def _process(self):
@@ -100,7 +100,7 @@ class RHPaypalSuccess(RHOpenCollectivePostPaymentRedirect):
         return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
 
 
-class RHPaypalCancel(RHOpenCollectivePostPaymentRedirect):
+class RHOpenCollectiveCancel(RHOpenCollectivePostPaymentRedirect):
     """Cancellation message"""
 
     def _process(self):
