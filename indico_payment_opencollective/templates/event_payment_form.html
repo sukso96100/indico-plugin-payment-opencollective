@@ -12,7 +12,7 @@
     <dd>{{ format_currency(amount, currency, locale=session.lang) }}</dd>
     <dt></dt>
     <dd>
-        <a class="i-button" href="{{ url_for_plugin('payment_sixpay.init', registration.locator.registrant) }}">
+        <a class="i-button" href="https://opencollective.com/{{event_settings.collective_slug}}{% if event_slug %}/events/{{event_slug}}{% endif %}/donate?interval=oneTime&amount=10&redirect={{redirect_url}}">
             {%- trans %}Pay Now{% endtrans -%}
         </a>
     </dd>

@@ -7,15 +7,13 @@
 
 from indico.core.plugins import IndicoPluginBlueprint
 
-from indico_payment_opencollective.controllers import RHPaypalCancel, RHPaypalIPN, RHPaypalSuccess
+from indico_payment_opencollective.controllers import RHOpenCollectivePostPaymentRedirect, RHOpenCollectiveCancel, RHOpenCollectiveSuccess
 
 
 blueprint = IndicoPluginBlueprint(
-    'payment_paypal', __name__,
+    'payment_opencollective', __name__,
     url_prefix='/event/<int:event_id>/registrations/<int:reg_form_id>/payment/response/opencollective'
 )
 
-blueprint.add_url_rule('/cancel', 'cancel', RHPaypalCancel, methods=('GET', 'POST'))
-blueprint.add_url_rule('/success', 'success', RHPaypalSuccess, methods=('GET', 'POST'))
-# Used by PayPal to send an asynchronous notification for the transaction (pending, successful, etc)
-blueprint.add_url_rule('/ipn', 'notify', RHPaypalIPN, methods=('POST',))
+blueprint.add_url_rule('/cancel', 'cancel', RHOpenCollectiveCancel, methods=('GET', 'POST'))
+blueprint.add_url_rule('/success', 'success', RHOpenCollectiveSuccess, methods=('GET', 'POST'))
