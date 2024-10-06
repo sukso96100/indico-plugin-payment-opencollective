@@ -30,8 +30,8 @@ paypal_transaction_action_mapping = {'Completed': TransactionAction.complete,
                                      'Pending': TransactionAction.pending}
 
 
-class RHPaypalIPN(RH):
-    """Process the notification sent by the PayPal"""
+class RHOpenCollectivePostPaymentRedirect(RH):
+    """Process the redirects after payment on Open Collective"""
 
     CSRF_ENABLED = False
 
@@ -42,7 +42,6 @@ class RHPaypalIPN(RH):
             raise BadRequest
 
     def _process(self):
-        self._verify_business()
         verify_params = list(chain(IPN_VERIFY_EXTRA_PARAMS, request.form.items()))
         result = requests.post(current_plugin.settings.get('url'), data=verify_params).text
         if result != 'VERIFIED':
@@ -72,16 +71,6 @@ class RHPaypalIPN(RH):
                              provider='paypal',
                              data=request.form)
 
-    def _verify_business(self):
-        expected = current_plugin.event_settings.get(self.registration.registration_form.event, 'business').lower()
-        candidates = {request.form.get('business', '').lower(),
-                      request.form.get('receiver_id', '').lower(),
-                      request.form.get('receiver_email', '').lower()}
-        if expected in candidates:
-            return True
-        current_plugin.logger.warning('Unexpected business: %s not in %r (request data: %r)', expected, candidates,
-                                      request.form)
-        return False
 
     def _verify_amount(self):
         expected_amount = self.registration.price
@@ -103,7 +92,7 @@ class RHPaypalIPN(RH):
                 transaction.data['txn_id'] == request.form.get('txn_id'))
 
 
-class RHPaypalSuccess(RHPaypalIPN):
+class RHPaypalSuccess(RHOpenCollectivePostPaymentRedirect):
     """Confirmation message after successful payment"""
 
     def _process(self):
@@ -111,7 +100,7 @@ class RHPaypalSuccess(RHPaypalIPN):
         return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
 
 
-class RHPaypalCancel(RHPaypalIPN):
+class RHPaypalCancel(RHOpenCollectivePostPaymentRedirect):
     """Cancellation message"""
 
     def _process(self):
