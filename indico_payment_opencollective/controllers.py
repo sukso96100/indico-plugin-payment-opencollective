@@ -23,7 +23,7 @@ from indico_payment_opencollective import _
 
 
 IPN_VERIFY_EXTRA_PARAMS = (('cmd', '_notify-validate'),)
-
+OC_API_BASEURL = "https://api.opencollective.com"
 
 paypal_transaction_action_mapping = {'Completed': TransactionAction.complete,
                                      'Denied': TransactionAction.reject,
@@ -42,54 +42,36 @@ class RHOpenCollectivePostPaymentRedirect(RH):
             raise BadRequest
 
     def _process(self):
-        verify_params = list(chain(IPN_VERIFY_EXTRA_PARAMS, request.form.items()))
-        result = requests.post(current_plugin.settings.get('url'), data=verify_params).text
-        if result != 'VERIFIED':
-            current_plugin.logger.warning('Paypal IPN string %s did not validate (%s)', verify_params, result)
-            return
-        if self._is_transaction_duplicated():
-            current_plugin.logger.info('Payment not recorded because transaction was duplicated\nData received: %s',
-                                       request.form)
-            return
-        payment_status = request.form.get('payment_status')
-        if payment_status == 'Failed':
-            current_plugin.logger.info('Payment failed (status: %s)\nData received: %s', payment_status, request.form)
-            return
-        if payment_status == 'Refunded' or float(request.form.get('mc_gross')) <= 0:
-            current_plugin.logger.warning('Payment refunded (status: %s)\nData received: %s',
-                                          payment_status, request.form)
-            return
-        if payment_status not in paypal_transaction_action_mapping:
-            current_plugin.logger.warning("Payment status '%s' not recognized\nData received: %s",
-                                          payment_status, request.form)
-            return
-        self._verify_amount()
+        oc_transactionid = request.args.get('transactionid') 
+        slug = current_plugin.settings.get('event_slug')
+        if not slug:
+            slug = current_plugin.settings.get('collective_slug')
+        oc_tx_response = requests.get(f"{OC_API_BASEURL}/v1/collectives/{slug}/transactions/{oc_transactionid}")
+        oc_tx_result = oc_tx_response.json()
+      
+        # current_plugin.logger.warning("Payment status '%s' not recognized\nData received: %s",
+                                        #   payment_status, request.form)
+            # return
+        self._verify_amount(oc_tx_result)
         register_transaction(registration=self.registration,
                              amount=float(request.form['mc_gross']),
                              currency=request.form['mc_currency'],
                              action=paypal_transaction_action_mapping[payment_status],
-                             provider='paypal',
+                             provider='opencollective',
                              data=request.form)
 
 
-    def _verify_amount(self):
+    def _verify_amount(self, oc_tx_result: dict):
         expected_amount = self.registration.price
         expected_currency = self.registration.currency
-        amount = float(request.form['mc_gross'])
-        currency = request.form['mc_currency']
+        amount = oc_tx_result['result']['amount'] / 100
+        currency = oc_tx_result['result']['currency	']
         if expected_amount == amount and expected_currency == currency:
             return True
         current_plugin.logger.warning("Payment doesn't match event's fee: %s %s != %s %s",
                                       amount, currency, expected_amount, expected_currency)
         notify_amount_inconsistency(self.registration, amount, currency)
         return False
-
-    def _is_transaction_duplicated(self):
-        transaction = self.registration.transaction
-        if not transaction or transaction.provider != 'paypal':
-            return False
-        return (transaction.data['payment_status'] == request.form.get('payment_status') and
-                transaction.data['txn_id'] == request.form.get('txn_id'))
 
 
 class RHOpenCollectiveSuccess(RHOpenCollectivePostPaymentRedirect):
