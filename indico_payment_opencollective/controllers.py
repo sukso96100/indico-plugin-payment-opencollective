@@ -48,14 +48,15 @@ class RHOpenCollectivePostPaymentRedirect(RH):
             slug = current_plugin.settings.get('collective_slug')
         oc_tx_response = requests.get(f"{OC_API_BASEURL}/v1/collectives/{slug}/transactions/{oc_transactionid}")
         oc_tx_result = oc_tx_response.json()
-      
+        oc_tx_amount = oc_tx_result['result']['amount'] / 100
+        oc_tx_currency = oc_tx_result['result']['currency	']
         # current_plugin.logger.warning("Payment status '%s' not recognized\nData received: %s",
                                         #   payment_status, request.form)
             # return
         self._verify_amount(oc_tx_result)
         register_transaction(registration=self.registration,
-                             amount=float(request.form['mc_gross']),
-                             currency=request.form['mc_currency'],
+                             amount=float(oc_tx_amount),
+                             currency=oc_tx_currency,
                              action=paypal_transaction_action_mapping[payment_status],
                              provider='opencollective',
                              data=request.form)
