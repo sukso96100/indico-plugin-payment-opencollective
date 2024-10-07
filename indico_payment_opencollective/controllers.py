@@ -25,9 +25,10 @@ from indico_payment_opencollective import _
 IPN_VERIFY_EXTRA_PARAMS = (('cmd', '_notify-validate'),)
 OC_API_BASEURL = "https://api.opencollective.com"
 
-paypal_transaction_action_mapping = {'Completed': TransactionAction.complete,
-                                     'Denied': TransactionAction.reject,
-                                     'Pending': TransactionAction.pending}
+oc_tx_order_status_action_mapping = {'PAID': TransactionAction.complete,
+                                     'REJECTED': TransactionAction.reject,
+                                     'PENDING': TransactionAction.pending,
+                                     'CANCELLED': TransactionAction.cancel}
 
 
 class RHOpenCollectivePostPaymentRedirect(RH):
@@ -49,7 +50,8 @@ class RHOpenCollectivePostPaymentRedirect(RH):
         oc_tx_response = requests.get(f"{OC_API_BASEURL}/v1/collectives/{slug}/transactions/{oc_transactionid}")
         oc_tx_result = oc_tx_response.json()
         oc_tx_amount = oc_tx_result['result']['amount'] / 100
-        oc_tx_currency = oc_tx_result['result']['currency	']
+        oc_tx_currency = oc_tx_result['result']['currency']
+        oc_tx_order_status = oc_tx_result['result']['order']['status']
         # current_plugin.logger.warning("Payment status '%s' not recognized\nData received: %s",
                                         #   payment_status, request.form)
             # return
@@ -57,7 +59,7 @@ class RHOpenCollectivePostPaymentRedirect(RH):
         register_transaction(registration=self.registration,
                              amount=float(oc_tx_amount),
                              currency=oc_tx_currency,
-                             action=paypal_transaction_action_mapping[payment_status],
+                             action=oc_tx_order_status_action_mapping[oc_tx_order_status],
                              provider='opencollective',
                              data=request.form)
 
