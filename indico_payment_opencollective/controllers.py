@@ -61,7 +61,7 @@ class RHOpenCollectivePostPaymentRedirect(RH):
                              currency=oc_tx_currency,
                              action=oc_tx_order_status_action_mapping[oc_tx_order_status],
                              provider='opencollective',
-                             data=request.form)
+                             data=oc_tx_result)
 
 
     def _verify_amount(self, oc_tx_result: dict):
