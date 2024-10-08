@@ -52,9 +52,12 @@ class RHOpenCollectivePostPaymentCallback(RH):
         oc_tx_amount = oc_tx_result['result']['amount'] / 100
         oc_tx_currency = oc_tx_result['result']['currency']
         oc_tx_order_status = oc_tx_result['result']['order']['status']
-        # current_plugin.logger.warning("Payment status '%s' not recognized\nData received: %s",
-                                        #   payment_status, request.form)
-            # return
+        oc_tx_payee_slug = oc_tx_result['result']['collective']['slug']
+
+        # Check if amount paid to correct collective
+        if slug != oc_tx_payee_slug:
+            current_plugin.logger.warning(f"Payment made to wrong collective (Expected: {slug}, Actual: {oc_tx_payee_slug})")
+            return
         self._verify_amount(oc_tx_result)
         register_transaction(registration=self.registration,
                              amount=float(oc_tx_amount),
