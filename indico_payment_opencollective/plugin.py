@@ -69,9 +69,8 @@ class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         event_settings = data['event_settings']
         plain_name = str_to_ascii(remove_accents(registration.full_name))
         plain_title = str_to_ascii(remove_accents(event.title))
-        redirect_url = url_for_plugin('payment_opencollective.success', registration.locator.uuid, _external=True)
+        redirect_url = url_for_plugin('payment_opencollective.callback', registration.locator.uuid, _external=True)
         data['item_name'] = f'{plain_name}: registration for {plain_title}'
-        data['cancel_url'] = url_for_plugin('payment_opencollective.cancel', registration.locator.uuid, _external=True)
 
         if event_settings['use_staging']:
             url = f"{OC_STAGING_BASEURL}/{event_settings['collective_slug']}"
