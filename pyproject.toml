@@ -6,7 +6,7 @@ license = {text = "MIT License"}
 authors = [{ name = 'Youngbin Han', email = 'ybhan@ubuntu.com' }]
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ['indico>=3.3']
+dependencies = ['indico>=3.3', 'gql[requests]>=3.5.0']
 classifiers = [
     'Environment :: Plugins',
     'Environment :: Web Environment',
