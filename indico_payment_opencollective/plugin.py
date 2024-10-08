@@ -16,16 +16,16 @@ OC_BASEURL = "https://opencollective.com"
 OC_STAGING_BASEURL = "https://staging.opencollective.com"
 
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
-    collective_slug = StringField('Slug for Collective on Open Collective')
-    event_slug = StringField('Slug for and Event under the Collective on Open Collective')
-    api_key = StringField('Open Collective API Key (Personal token)')
-    use_staging = BooleanField('Use Staging server of Open Collective')
+    collective_slug = StringField(_('Collective Slug'), [DataRequired()], description=_('Slug for Collective on Open Collective'))
+    event_slug = StringField(_('Event Slug'), [Optional()], description=_('Slug for and Event under the Collective on Open Collective'))
+    api_key = StringField(_('API Key'), [Optional()], description=_('Open Collective API Key (Personal token)'))
+    use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective'))
 
 class EventSettingsForm(PaymentEventSettingsFormBase):
-    collective_slug = StringField('Slug for Collective on Open Collective')
-    event_slug = StringField('Slug for and Event under the Collective on Open Collective')
-    api_key = StringField('Open Collective API Key (Personal token)')
-    use_staging = BooleanField('Use Staging server of Open Collective')
+    collective_slug = StringField(_('Collective Slug'), [DataRequired()], description=_('Slug for Collective on Open Collective'))
+    event_slug = StringField(_('Event Slug'), [Optional()], description=_('Slug for and Event under the Collective on Open Collective'))
+    api_key = StringField(_('API Key'), [Optional()], description=_('Open Collective API Key (Personal token)'))
+    use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective'))
 
 class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     """OpenCollective
@@ -36,7 +36,7 @@ class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     settings_form = PluginSettingsForm
     event_settings_form = EventSettingsForm
     default_settings = {
-        'method_name': 'OpenCollective',
+        'method_name': 'Open Collective',
         'collective_slug': '',
         'event_slug': '',
         'api_key':'',
@@ -62,8 +62,6 @@ class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         return blueprint
 
     def adjust_payment_form_data(self, data):
-        url = "{{event_settings.collective_slug}}{% if event_slug %}/events/{{event_slug}}{% endif %}/donate?interval=oneTime&amount=10"
-        
         event = data['event']
         registration = data['registration']
         event_settings = data['event_settings']
