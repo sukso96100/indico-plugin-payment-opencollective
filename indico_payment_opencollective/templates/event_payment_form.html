@@ -2,19 +2,6 @@
     Clicking on the <strong>Pay Now</strong> button will redirect you
     to the Open Collective site in order to complete your payment.
 {% endtrans %}
-
-{% from 'message_box.html' import message_box %}
-
-{% call message_box('info') %}
-    {% trans %}
-        After completing payment on Open Collective, 
-        You will see a warning message that your request is being redirected to outside of Open Collective. 
-        Check the redirect URL then click <strong>Continue</strong> on that screen. 
-        So that you can get redirected back to registration then have your payment result processed.
-    {% endtrans %}
-{% endcall %}
-
-
 <dl class="i-data-list">
     <dt>{% trans %}First name{% endtrans %}</dt>
     <dd>{{ registration.first_name }}</dd>
@@ -29,3 +16,13 @@
         </a>
     </dd>
 </dl>
+{% from 'message_box.html' import message_box %}
+
+{% call message_box('info') %}
+    {% trans %}
+        After completing payment on Open Collective, 
+        You will see a warning message that your request is being redirected to outside of Open Collective. 
+        Check the redirect URL then click <strong>Continue</strong> on that screen. 
+        So that you can get redirected back to registration then have your payment result processed.
+    {% endtrans %}
+{% endcall %}
