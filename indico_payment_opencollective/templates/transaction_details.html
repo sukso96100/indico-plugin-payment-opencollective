@@ -1,9 +1,15 @@
 {% extends 'events/payment/transaction_details.html' %}
 {% block details %}
-    {% if transaction.data.Transaction %}
-        <dt>{% trans %}Transaction ID{% endtrans %}</dt>
-        <dd>{{ transaction.data.Transaction.Id }}</dd>
-        <dt>{% trans %}Order ID{% endtrans %}</dt>
-        <dd>{{ transaction.data.Transaction.OrderId }}</dd>
+    {% if transaction.data.result %}
+        <dt>{% trans %}Transaction ID (Number){% endtrans %}</dt>
+        <dd>{{ transaction.data.result.id }}</dd>
+        <dt>{% trans %}Transaction ID (UUID){% endtrans %}</dt>
+        <dd>{{ transaction.data.result.uuid }}</dd>
+        <dt>{% trans %}Description{% endtrans %}</dt>
+        <dd>{{ transaction.data.result.description }}</dd>
+        <dt>{% trans %}Payer{% endtrans %}</dt>
+        <dd>{{ transaction.data.result.fromCollective.name }} ({{ transaction.data.result.fromCollective.slug }})</dd>
+        <dt>{% trans %}Payee{% endtrans %}</dt>
+        <dd>{{ transaction.data.result.collective.name }} ({{ transaction.data.result.collective.slug }})</dd>
     {% endif %}
 {% endblock %}
