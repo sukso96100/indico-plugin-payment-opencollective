@@ -99,24 +99,6 @@ query (
       supportedExpenseTypes
       categories
     }
-    transactions {
-      id
-      legacyId
-      group
-      type
-      kind
-      description
-      hostCurrencyFxRate
-      createdAt
-      updatedAt
-      isRefunded
-      isRefund
-      isDisputed
-      isInReview
-      isOrderRejected
-      merchantId
-      invoiceTemplate
-    }
     createdAt
     updatedAt
     totalDonations {
@@ -148,10 +130,6 @@ query (
       rate
       idNumber
     }
-    tax {
-      type
-      rate
-    }
     activities {
       offset
       limit
@@ -160,29 +138,6 @@ query (
     data
     customData
     memo
-    createdByAccount {
-      id
-      slug
-      type
-      name
-      legalName
-      description
-      longDescription
-      tags
-      currency
-      expensePolicy
-      isIncognito
-      createdAt
-      updatedAt
-      isArchived
-      isFrozen
-      isActive
-      isHost
-      isAdmin
-      emails
-      supportedExpenseTypes
-      categories
-    }
     processedAt
     pendingContributionData {
       expectedAt
@@ -241,10 +196,11 @@ class RHOpenCollectivePostPaymentCallback(RH):
                 }
             }
         oc_order_result = client.execute(gql_query, variable_values=gql_params)
-        oc_order_amount = oc_order_result['data']['order']['amount']['value']
-        oc_order_currency = oc_order_result['data']['order']['amount']['currency']
-        oc_order_order_status = oc_order_result['data']['order']['status']
-        oc_order_payee_slug = oc_order_result['data']['order']['toAccount']['slug']
+        print(oc_order_result)
+        oc_order_amount = oc_order_result['order']['amount']['value']
+        oc_order_currency = oc_order_result['order']['amount']['currency']
+        oc_order_order_status = oc_order_result['order']['status']
+        oc_order_payee_slug = oc_order_result['order']['toAccount']['slug']
 
         # Check if amount paid to correct collective
         if slug != oc_order_payee_slug:
@@ -267,8 +223,8 @@ class RHOpenCollectivePostPaymentCallback(RH):
     def _verify_amount(self, oc_order_result: dict):
         expected_amount = self.registration.price
         expected_currency = self.registration.currency
-        amount = oc_order_result['data']['order']['amount']['value']
-        currency = oc_order_result['data']['order']['amount']['currency']
+        amount = oc_order_result['order']['amount']['value']
+        currency = oc_order_result['order']['amount']['currency']
         if expected_amount == amount and expected_currency == currency:
             return True
         current_plugin.logger.warning("Payment doesn't match event's fee: %s %s != %s %s",
