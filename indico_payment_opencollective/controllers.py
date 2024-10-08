@@ -65,8 +65,6 @@ query (
       currency
       expensePolicy
       isIncognito
-      imageUrl
-      backgroundImageUrl
       createdAt
       updatedAt
       isArchived
@@ -75,7 +73,6 @@ query (
       isHost
       isAdmin
       emails
-      settings
       supportedExpenseTypes
       categories
     }
@@ -91,8 +88,6 @@ query (
       currency
       expensePolicy
       isIncognito
-      imageUrl
-      backgroundImageUrl
       createdAt
       updatedAt
       isArchived
@@ -101,7 +96,6 @@ query (
       isHost
       isAdmin
       emails
-      settings
       supportedExpenseTypes
       categories
     }
@@ -158,37 +152,6 @@ query (
       type
       rate
     }
-    membership {
-      id
-      role
-      createdAt
-      updatedAt
-      since
-      publicMessage
-      description
-      inherited
-    }
-    permissions {
-      id
-      canMarkAsExpired
-      canMarkAsPaid
-      canEdit
-      canComment
-      canSeePrivateActivities
-      canSetTags
-      canUpdateAccountingCategory
-    }
-    accountingCategory {
-      id
-      code
-      name
-      friendlyName
-      hostOnly
-      instructions
-      expensesTypes
-      kind
-      createdAt
-    }
     activities {
       offset
       limit
@@ -209,8 +172,6 @@ query (
       currency
       expensePolicy
       isIncognito
-      imageUrl
-      backgroundImageUrl
       createdAt
       updatedAt
       isArchived
@@ -219,7 +180,6 @@ query (
       isHost
       isAdmin
       emails
-      settings
       supportedExpenseTypes
       categories
     }
