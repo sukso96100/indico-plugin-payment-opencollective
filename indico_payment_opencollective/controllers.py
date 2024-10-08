@@ -73,7 +73,7 @@ class RHOpenCollectivePostPaymentCallback(RH):
         expected_amount = self.registration.price
         expected_currency = self.registration.currency
         amount = oc_tx_result['result']['amount'] / 100
-        currency = oc_tx_result['result']['currency	']
+        currency = oc_tx_result['result']['currency']
         if expected_amount == amount and expected_currency == currency:
             return True
         current_plugin.logger.warning("Payment doesn't match event's fee: %s %s != %s %s",
