@@ -7,7 +7,7 @@
 
 from indico.core.plugins import IndicoPluginBlueprint
 
-from indico_payment_opencollective.controllers import RHOpenCollectivePostPaymentRedirect, RHOpenCollectiveCancel, RHOpenCollectiveSuccess
+from indico_payment_opencollective.controllers import RHOpenCollectivePostPaymentCallback
 
 
 blueprint = IndicoPluginBlueprint(
@@ -15,5 +15,4 @@ blueprint = IndicoPluginBlueprint(
     url_prefix='/event/<int:event_id>/registrations/<int:reg_form_id>/payment/response/opencollective'
 )
 
-blueprint.add_url_rule('/cancel', 'cancel', RHOpenCollectiveCancel, methods=('GET', 'POST'))
-blueprint.add_url_rule('/success', 'success', RHOpenCollectiveSuccess, methods=('GET', 'POST'))
+blueprint.add_url_rule('/callback', 'callback', RHOpenCollectivePostPaymentCallback, methods=('GET', 'POST'))

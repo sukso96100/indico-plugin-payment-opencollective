@@ -31,7 +31,7 @@ oc_tx_order_status_action_mapping = {'PAID': TransactionAction.complete,
                                      'CANCELLED': TransactionAction.cancel}
 
 
-class RHOpenCollectivePostPaymentRedirect(RH):
+class RHOpenCollectivePostPaymentCallback(RH):
     """Process the redirects after payment on Open Collective"""
 
     CSRF_ENABLED = False
@@ -62,6 +62,8 @@ class RHOpenCollectivePostPaymentRedirect(RH):
                              action=oc_tx_order_status_action_mapping[oc_tx_order_status],
                              provider='opencollective',
                              data=oc_tx_result)
+        flash(_('Your payment request has been processed.'), 'success')
+        return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
 
 
     def _verify_amount(self, oc_tx_result: dict):
@@ -77,17 +79,3 @@ class RHOpenCollectivePostPaymentRedirect(RH):
         return False
 
 
-class RHOpenCollectiveSuccess(RHOpenCollectivePostPaymentRedirect):
-    """Confirmation message after successful payment"""
-
-    def _process(self):
-        flash(_('Your payment request has been processed.'), 'success')
-        return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
-
-
-class RHOpenCollectiveCancel(RHOpenCollectivePostPaymentRedirect):
-    """Cancellation message"""
-
-    def _process(self):
-        flash(_('You cancelled the payment process.'), 'info')
-        return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
