@@ -25,7 +25,7 @@ class EventSettingsForm(PaymentEventSettingsFormBase):
     use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective'))
 
 class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
-    """OpenCollective
+    """Open Collective
 
     Provides a payment method using the OpenCollective Post donation redirect API.
     """
