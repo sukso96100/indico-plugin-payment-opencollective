@@ -24,7 +24,6 @@ from indico.web.rh import RH
 from indico_payment_opencollective import _
 
 
-IPN_VERIFY_EXTRA_PARAMS = (('cmd', '_notify-validate'),)
 OC_API_BASEURL = "https://api.opencollective.com/graphql/v2"
 OC_GQL_ORDER_QUERY = """
 query (
@@ -170,16 +169,16 @@ class RHOpenCollectivePostPaymentCallback(RH):
     def _process_args(self):
         self.token = request.args['token']
         self.registration = Registration.query.filter_by(uuid=self.token).first()
+        self.oc_order_id = request.args['orderId']
+        self.oc_order_id_v2 = request.args['orderIdV2'] 
+        self.oc_order_status = request.args['status'] 
         if not self.registration:
             raise BadRequest
 
     def _process(self):
-        oc_order_id = request.args.get('orderId') 
-        oc_order_id_v2 = request.args.get('orderIdV2') 
-        oc_status = request.args.get('status')
-        slug = current_plugin.settings.get('event_slug')
+        slug = current_plugin.event_settings.get(self.registration.registration_form.event, 'event_slug')
         if not slug:
-            slug = current_plugin.settings.get('collective_slug')
+            slug = current_plugin.event_settings.get(self.registration.registration_form.event, 'collective_slug')
 
         transport = RequestsHTTPTransport(
             url=OC_API_BASEURL,
@@ -191,24 +190,29 @@ class RHOpenCollectivePostPaymentCallback(RH):
         gql_query = gql(OC_GQL_ORDER_QUERY)
         gql_params = {
             "order": {
-                "id": oc_order_id_v2,
-                "legacyId": int(oc_order_id)
+                "id": self.oc_order_id_v2,
+                "legacyId": int(self.oc_order_id)
                 }
             }
         oc_order_result = client.execute(gql_query, variable_values=gql_params)
-        print(oc_order_result)
         oc_order_amount = oc_order_result['order']['amount']['value']
         oc_order_currency = oc_order_result['order']['amount']['currency']
         oc_order_order_status = oc_order_result['order']['status']
         oc_order_payee_slug = oc_order_result['order']['toAccount']['slug']
+        oc_order_payment_frequency = oc_order_result['order']['frequency']
 
         # Check if amount paid to correct collective
         if slug != oc_order_payee_slug:
             current_plugin.logger.warning(f"Payment made to wrong collective (Expected: {slug}, Actual: {oc_order_payee_slug})")
             return
-        if oc_status != oc_order_order_status:
+        if oc_order_payment_frequency != "ONETIME":
+            current_plugin.logger.warning(f"Payment must be ONETIME (Expected: ONETIME, Actual: {oc_order_payment_frequency})")
+            return
+        if self.oc_order_status != oc_order_order_status:
             current_plugin.logger.warning(
-                f"Payment status from callback url and graphql response not matches. This could be due to update on order after callback data received from url (From URL: {oc_status}, From GraphQL Response: {oc_order_order_status})")
+                f"Payment status from callback url and graphql response not matches. \
+                    This could be due to update on order after callback data received from url \
+                        (From URL: {self.oc_order_status}, From GraphQL Response: {oc_order_order_status})")
         self._verify_amount(oc_order_result)
         register_transaction(registration=self.registration,
                              amount=float(oc_order_amount),
