@@ -1,15 +1,17 @@
 {% extends 'events/payment/transaction_details.html' %}
 {% block details %}
-    {% if transaction.data.result %}
-        <dt>{% trans %}Transaction ID (Number){% endtrans %}</dt>
-        <dd>{{ transaction.data.result.id }}</dd>
-        <dt>{% trans %}Transaction ID (UUID){% endtrans %}</dt>
-        <dd>{{ transaction.data.result.uuid }}</dd>
+    {% if transaction.data.order %}
+        <dt>{% trans %}Order ID (Number){% endtrans %}</dt>
+        <dd>{{ transaction.data.order.legacyId }}</dd>
+        <dt>{% trans %}Order ID (UUID){% endtrans %}</dt>
+        <dd>{{ transaction.data.order.id }}</dd>
         <dt>{% trans %}Description{% endtrans %}</dt>
-        <dd>{{ transaction.data.result.description }}</dd>
+        <dd>{{ transaction.data.order.description }}</dd>
         <dt>{% trans %}Payer{% endtrans %}</dt>
-        <dd>{{ transaction.data.result.fromCollective.name }} ({{ transaction.data.result.fromCollective.slug }})</dd>
+        <dd>{{ transaction.data.order.fromAccount.name }} ({{ transaction.data.order.fromAccount.slug }})</dd>
         <dt>{% trans %}Payee{% endtrans %}</dt>
-        <dd>{{ transaction.data.result.collective.name }} ({{ transaction.data.result.collective.slug }})</dd>
+        <dd>{{ transaction.data.order.toAccount.name }} ({{ transaction.data.order.toAccount.slug }})</dd>
+        <dt>{% trans %}Processed at{% endtrans %}</dt>
+        <dd>{{ transaction.data.order.processedAt }}</dd>
     {% endif %}
 {% endblock %}
