@@ -1,10 +1,11 @@
 [project]
 name = "indico-payment-opencollective"
 version = "0.1.0"
-description = "Add your description here"
+description = "Indico payment plugin for processing payment with Open Collective"
+license = 'MIT'
+authors = [{ name = 'Youngbin Han', email = 'ybhan@ubuntu.com' }]
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
-
+dependencies = ['indico>=3.3']
 [project.entry-points.'indico.plugins']
 payment_opencollective = 'indico_payment_opencollective.plugin:OpenCollectivePaymentPlugin'
