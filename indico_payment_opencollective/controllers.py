@@ -53,29 +53,6 @@ query (
     status
     frequency
     nextChargeDate
-    tier {
-      id
-      legacyId
-      slug
-      name
-      description
-      longDescription
-      videoUrl
-      currency
-      button
-      type
-      frequency
-      presets
-      maxQuantity
-      availableQuantity
-      customFields
-      amountType
-      endsAt
-      invoiceTemplate
-      useStandalonePage
-      singleTicket
-      requireAddress
-    }
     fromAccount {
       id
       slug
