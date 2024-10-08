@@ -289,9 +289,6 @@ class RHOpenCollectivePostPaymentCallback(RH):
         if not slug:
             slug = current_plugin.settings.get('collective_slug')
 
-
-        oc_tx_response = requests.get(f"{OC_API_BASEURL}/v1/collectives/{slug}/transactions/{oc_transactionid}")
-
         transport = RequestsHTTPTransport(
             url=OC_API_BASEURL,
             verify=True,
@@ -316,6 +313,9 @@ class RHOpenCollectivePostPaymentCallback(RH):
         if slug != oc_order_payee_slug:
             current_plugin.logger.warning(f"Payment made to wrong collective (Expected: {slug}, Actual: {oc_order_payee_slug})")
             return
+        if oc_status != oc_order_order_status:
+            current_plugin.logger.warning(
+                f"Payment status from callback url and graphql response not matches. This could be due to update on order after callback data received from url (From URL: {oc_status}, From GraphQL Response: {oc_order_order_status})")
         self._verify_amount(oc_order_result)
         register_transaction(registration=self.registration,
                              amount=float(oc_order_amount),
