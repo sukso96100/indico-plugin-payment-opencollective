@@ -2,10 +2,17 @@
 name = "indico-payment-opencollective"
 version = "0.1.0"
 description = "Indico payment plugin for processing payment with Open Collective"
-license = 'MIT'
+license = {text = "MIT License"}
 authors = [{ name = 'Youngbin Han', email = 'ybhan@ubuntu.com' }]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = ['indico>=3.3']
+classifiers = [
+    'Environment :: Plugins',
+    'Environment :: Web Environment',
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3.12',
+]
+
 [project.entry-points.'indico.plugins']
 payment_opencollective = 'indico_payment_opencollective.plugin:OpenCollectivePaymentPlugin'
