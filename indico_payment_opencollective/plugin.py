@@ -73,14 +73,16 @@ class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         data['item_name'] = f'{plain_name}: registration for {plain_title}'
 
         if event_settings['use_staging']:
-            url = f"{OC_STAGING_BASEURL}/{event_settings['collective_slug']}"
+            url = f"{OC_STAGING_BASEURL}"
         else:
-            url = f"{OC_BASEURL}/{event_settings['collective_slug']}"
+            url = f"{OC_BASEURL}"
 
         if event_settings['event_slug']:
-            url += f"/events/{event_settings['event_slug']}"
+            url += f"/{event_settings['event_slug']}"
+        else:
+            url += f"/{event_settings['collective_slug']}"
 
-        url += f"/donate?interval=oneTime&amount={data['amount']}&redirect={redirect_url}"
+        url += f"/donate/{int(data['amount'])}/indico_registration_fee_payment?redirect={redirect_url}"
         
         data['payment_url'] = url
         
