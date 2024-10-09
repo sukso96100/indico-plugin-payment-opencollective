@@ -13,7 +13,7 @@ from indico_payment_opencollective.blueprint import blueprint
 from indico_payment_opencollective.constants import OC_BASEURL, OC_STAGING_BASEURL
 
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
-    collective_slug = StringField(_('Collective Slug'), [DataRequired()], description=_('Slug for Collective on Open Collective'))
+    collective_slug = StringField(_('Collective Slug'), [Optional()], description=_('Slug for Collective on Open Collective'))
     event_slug = StringField(_('Event Slug'), [Optional()], description=_('Slug for and Event under the Collective on Open Collective'))
     token = StringField(_('Token'), [Optional()], description=_('Open Collective Token (Personal token - To create one, go to your personal settings on Open Collective and navigate to the For developers section.)'))
     use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective. Plugin might not fully functional with staging server'))
@@ -21,7 +21,7 @@ class PluginSettingsForm(PaymentPluginSettingsFormBase):
 class EventSettingsForm(PaymentEventSettingsFormBase):
     collective_slug = StringField(_('Collective Slug'), [DataRequired()], description=_('Slug for Collective on Open Collective'))
     event_slug = StringField(_('Event Slug'), [Optional()], description=_('Slug for and Event under the Collective on Open Collective'))
-    token = StringField(_('Token'), [Optional()], description=_('Open Collective Token (Personal token - To create one, go to your personal settings on Open Collective and navigate to the For developers section.)'))
+    token = StringField(_('Token'), [DataRequired()], description=_('Open Collective Token (Personal token - To create one, go to your personal settings on Open Collective and navigate to the For developers section.)'))
     use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective. Plugin might not fully functional with staging server'))
 
 class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
