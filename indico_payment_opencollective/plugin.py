@@ -15,14 +15,14 @@ from indico_payment_opencollective.constants import OC_BASEURL, OC_STAGING_BASEU
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
     collective_slug = StringField(_('Collective Slug'), [DataRequired()], description=_('Slug for Collective on Open Collective'))
     event_slug = StringField(_('Event Slug'), [Optional()], description=_('Slug for and Event under the Collective on Open Collective'))
-    api_key = StringField(_('API Key'), [Optional()], description=_('Open Collective API Key (Personal token)'))
-    use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective'))
+    token = StringField(_('Token'), [Optional()], description=_('Open Collective Token (Personal token - To create one, go to your personal settings on Open Collective and navigate to the For developers section.)'))
+    use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective. Plugin might not fully functional with staging server'))
 
 class EventSettingsForm(PaymentEventSettingsFormBase):
     collective_slug = StringField(_('Collective Slug'), [DataRequired()], description=_('Slug for Collective on Open Collective'))
     event_slug = StringField(_('Event Slug'), [Optional()], description=_('Slug for and Event under the Collective on Open Collective'))
-    api_key = StringField(_('API Key'), [Optional()], description=_('Open Collective API Key (Personal token)'))
-    use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective'))
+    token = StringField(_('Token'), [Optional()], description=_('Open Collective Token (Personal token - To create one, go to your personal settings on Open Collective and navigate to the For developers section.)'))
+    use_staging = BooleanField(_('Use Staging'), [Optional()], description=_('Use Staging server of Open Collective. Plugin might not fully functional with staging server'))
 
 class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
     """Open Collective
@@ -36,7 +36,7 @@ class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         'method_name': 'Open Collective',
         'collective_slug': '',
         'event_slug': '',
-        'api_key':'',
+        'token':'',
         'use_staging': False
         }
     default_event_settings = {
@@ -44,7 +44,7 @@ class OpenCollectivePaymentPlugin(PaymentPluginMixin, IndicoPlugin):
         'method_name': None,
         'collective_slug': '',
         'event_slug': '',
-        'api_key':'',
+        'token':'',
         'use_staging': False
         }
 
