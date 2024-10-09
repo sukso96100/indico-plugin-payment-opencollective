@@ -23,3 +23,12 @@ PLUGINS = { ... , 'payment_opencollective'}
 ### For production
 TBD
 
+## Configuration
+On your Indico event item admin page, Go to `Features` then enable `Payment` feature.
+
+Once done, Go to `Payments` then under `Payment methods` section, Click `Open Collective` and enable. Enter and save configurations. 
+Once you also configured pricing for each registration form, then you're ready to accept payments with Open Collective.
+
+- Collective Slug: Slug of your collective on Open Collective. (e.g. If it's `https://opencollective.com/ubucon-asia` then enter `ubucon-asia`)
+- Event Slug: If you have created event under your collective, enter slug of the event on Open Collective. (e.g. If it's `https://opencollective.com/ubucon-asia/events/ubucon-asia-2024-d62e355c` then enter `ubucon-asia-2024-d62e355c`)
+- Token: Used for querying order data from Open Collective. Go to your personal settings on Open Collective and navigate to the `For developers` section to craete yours
