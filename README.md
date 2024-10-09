@@ -2,6 +2,8 @@
 
 This plugin allows Open Collective to be used as payment method for paying registration fee on Indico. [Uses Open Collective's Post-Donation Redirect feature](https://docs.opencollective.com/help/contributing/development/post-donation-redirect) to handle payment. With this plugin, Usrs are redirected to specific event on collective on Open Collective then redirected back to Indico with transaction information from Open Collective.
 
+[**See how it works with short demo video**](https://youtu.be/FnMXnVP1xwA)
+
 ## Installing
 
 ### For testing inside Indico development environment
