@@ -32,3 +32,5 @@ Once you also configured pricing for each registration form, then you're ready t
 - Collective Slug: Slug of your collective on Open Collective. (e.g. If it's `https://opencollective.com/ubucon-asia` then enter `ubucon-asia`)
 - Event Slug: If you have created event under your collective, enter slug of the event on Open Collective. (e.g. If it's `https://opencollective.com/ubucon-asia/events/ubucon-asia-2024-d62e355c` then enter `ubucon-asia-2024-d62e355c`)
 - Token: Used for querying order data from Open Collective. Go to your personal settings on Open Collective and navigate to the `For developers` section to craete yours
+
+Pricing of each registration can be configured on `General settings` of each regiatraion settings. Make sure to match currency of registration form with the collective integrated so that people won't get confused on checkout.  
