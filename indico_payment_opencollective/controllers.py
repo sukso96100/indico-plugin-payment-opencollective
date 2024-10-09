@@ -42,14 +42,16 @@ class RHOpenCollectivePostPaymentCallback(RH):
             raise BadRequest
 
     def _process(self):
-        slug = current_plugin.event_settings.get(self.registration.registration_form.event, 'event_slug')
+        oc_token = slug = self._get_event_settings('token')
+        slug = self._get_event_settings('event_slug')
         if not slug:
-            slug = current_plugin.event_settings.get(self.registration.registration_form.event, 'collective_slug')
+            slug = self._get_event_settings('collective_slug')
 
         transport = RequestsHTTPTransport(
             url=OC_API_BASEURL,
             verify=True,
             retries=3,
+            headers={'Personal-Token': oc_token}
         )
 
         client = Client(transport=transport, fetch_schema_from_transport=True)
@@ -119,4 +121,5 @@ class RHOpenCollectivePostPaymentCallback(RH):
         notify_amount_inconsistency(self.registration, amount, currency)
         return False
 
-
+    def _get_event_settings(self, settings_key: str):
+        return current_plugin.event_settings.get(self.registration.registration_form.event, settings_key)
