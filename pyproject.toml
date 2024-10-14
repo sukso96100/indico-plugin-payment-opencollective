@@ -1,5 +1,5 @@
 [project]
-name = "indico-payment-opencollective"
+name = "indico-plugin-payment-opencollective"
 version = "0.1.0"
 description = "Indico payment plugin for processing payment with Open Collective"
 license = {text = "MIT License"}
