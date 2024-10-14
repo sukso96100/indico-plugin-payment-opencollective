@@ -70,17 +70,17 @@ class RHOpenCollectivePostPaymentCallback(RH):
         oc_order_payment_frequency = oc_order_result['order']['frequency']
 
         is_payment_valid = True
-        invliad_error_msgs = []
+        invalid_error_msgs = []
         
         if slug != oc_order_payee_slug:
             error_msg = f"Payment made to wrong collective (Expected: {slug}, Actual: {oc_order_payee_slug})"
             current_plugin.logger.warning(error_msg)
-            invliad_error_msgs.append(error_msg)
+            invalid_error_msgs.append(error_msg)
             is_payment_valid = False
         if oc_order_payment_frequency != "ONETIME":
             error_msg = f"Payment must be ONETIME (Expected: ONETIME, Actual: {oc_order_payment_frequency})"
             current_plugin.logger.warning(error_msg)
-            invliad_error_msgs.append(error_msg)
+            invalid_error_msgs.append(error_msg)
             is_payment_valid = False
         if self.oc_order_status != oc_order_order_status:
             current_plugin.logger.warning(
@@ -103,7 +103,7 @@ class RHOpenCollectivePostPaymentCallback(RH):
         else:
             warning_msg = 'Your payment request is not valid. Thus, not recorded for this registration. \
                 Please contact organizers to check and resolve this issue.'
-            for msg_item in invliad_error_msgs:
+            for msg_item in invalid_error_msgs:
                 warning_msg = f"{warning_msg}<br/>{msg_item}"
             flash(_(warning_msg), 'error')
         return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
