@@ -71,9 +71,10 @@ class RHOpenCollectivePostPaymentCallback(RH):
 
         is_payment_valid = True
         invalid_error_msgs = []
+
         if self._is_transaction_duplicated(oc_order_result):
-            error_msg = f"Payment not recorded because transaction was duplicated\nData received {oc_order_result}"
-            current_plugin.logger.info(error_msg)
+            error_msg = "Payment not recorded because transaction was duplicated"
+            current_plugin.logger.info(f"{error_msg}\nData received {oc_order_result}")
             invalid_error_msgs.append(error_msg)
             is_payment_valid = False
         if slug != oc_order_payee_slug:
@@ -91,6 +92,28 @@ class RHOpenCollectivePostPaymentCallback(RH):
                 f"Payment status from callback url and graphql response not matches. \
                     This could be due to update on order after callback data received from url \
                         (From URL: {self.oc_order_status}, From GraphQL Response: {oc_order_order_status})")
+            
+        if oc_order_order_status == "REJECTED":
+            error_msg = "Payment has been rejected on Open Collective"
+            current_plugin.logger.warning(error_msg)
+            invalid_error_msgs.append(error_msg)
+            is_payment_valid = False
+        elif oc_order_order_status == "CANCELED":
+            error_msg = "Payment has been canceled on Open Collective"
+            current_plugin.logger.warning(error_msg)
+            invalid_error_msgs.append(error_msg)
+            is_payment_valid = False
+        elif oc_order_order_status == "ERROR":
+            error_msg = "An error occurred while Open Collective is processing your payment"
+            current_plugin.logger.warning(error_msg)
+            invalid_error_msgs.append(error_msg)
+            is_payment_valid = False
+        elif oc_order_order_status == "REFUNDED":
+            error_msg = "Payment has been refunded on Open Collective"
+            current_plugin.logger.warning(error_msg)
+            invalid_error_msgs.append(error_msg)
+            is_payment_valid = False
+
         if is_payment_valid:
             is_amount_valid = self._verify_amount(oc_order_result)
             register_transaction(registration=self.registration,
@@ -106,7 +129,7 @@ class RHOpenCollectivePostPaymentCallback(RH):
                         Please contact organizers to check and resolve this issue.'), 'warning')
         else:
             warning_msg = 'Your payment request is not valid. Thus, not recorded for this registration. \
-                Please contact organizers to check and resolve this issue.'
+                Please contact organizers to check and resolve this issue.<br/>'
             for msg_item in invalid_error_msgs:
                 warning_msg = f"{warning_msg}<br/>{msg_item}"
             flash(_(warning_msg), 'error')
