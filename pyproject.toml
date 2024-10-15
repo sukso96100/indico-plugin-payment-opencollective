@@ -14,5 +14,30 @@ classifiers = [
     'Programming Language :: Python :: 3.12',
 ]
 
+[project.urls]
+GitHub = 'https://github.com/sukso96100/indico-plugin-payment-opencollective'
+
 [project.entry-points.'indico.plugins']
 payment_opencollective = 'indico_payment_opencollective.plugin:OpenCollectivePaymentPlugin'
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ['indico_payment_opencollective']
+exclude = [
+    '*.no-header',
+    '.keep',
+    # exclude original client sources (they are all included in source maps anyway)
+    'indico_*/client/',
+    # no need for tests outside development
+    'test_snapshots/',
+    'tests/',
+    '*_test.py',
+]
+artifacts = [
+    'indico_*/translations/**/messages-react.json',
+    'indico_*/translations/**/*.mo',
+    'indico_*/static/dist/',
+]
