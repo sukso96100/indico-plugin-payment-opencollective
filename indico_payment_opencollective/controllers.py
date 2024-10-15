@@ -71,7 +71,11 @@ class RHOpenCollectivePostPaymentCallback(RH):
 
         is_payment_valid = True
         invalid_error_msgs = []
-        
+        if self._is_transaction_duplicated(oc_order_result):
+            error_msg = f"Payment not recorded because transaction was duplicated\nData received {oc_order_result}"
+            current_plugin.logger.info(error_msg)
+            invalid_error_msgs.append(error_msg)
+            is_payment_valid = False
         if slug != oc_order_payee_slug:
             error_msg = f"Payment made to wrong collective (Expected: {slug}, Actual: {oc_order_payee_slug})"
             current_plugin.logger.warning(error_msg)
@@ -107,7 +111,14 @@ class RHOpenCollectivePostPaymentCallback(RH):
                 warning_msg = f"{warning_msg}<br/>{msg_item}"
             flash(_(warning_msg), 'error')
         return redirect(url_for('event_registration.display_regform', self.registration.locator.registrant))
-
+    
+    def _is_transaction_duplicated(self, order_data: dict):
+        transaction = self.registration.transaction
+        if not transaction or transaction.provider != 'opencollective':
+            return False
+        return (transaction.data['order']['status'] == order_data['order']['status'] and
+                transaction.data['order']['id'] == order_data['order']['id'] and 
+                transaction.data['order']['legacyId'] == order_data['order']['legacyId'])
 
     def _verify_amount(self, oc_order_result: dict):
         expected_amount = self.registration.price
