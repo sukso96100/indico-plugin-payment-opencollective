@@ -7,8 +7,8 @@
 
 from indico.core.plugins import IndicoPluginBlueprint
 
-from indico_payment_opencollective.controllers import RHOpenCollectivePostPaymentCallback
-
+from indico_payment_opencollective.controllers import \
+    RHOpenCollectivePostPaymentCallback
 
 blueprint = IndicoPluginBlueprint(
     'payment_opencollective', __name__,

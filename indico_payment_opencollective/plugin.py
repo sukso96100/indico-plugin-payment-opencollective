@@ -1,16 +1,18 @@
 
 from flask_pluginengine import render_plugin_template
-from wtforms.fields import StringField, BooleanField
-from wtforms.validators import DataRequired, Optional
-
 from indico.core.plugins import IndicoPlugin, url_for_plugin
-from indico.modules.events.payment import (PaymentEventSettingsFormBase, PaymentPluginMixin,
+from indico.modules.events.payment import (PaymentEventSettingsFormBase,
+                                           PaymentPluginMixin,
                                            PaymentPluginSettingsFormBase)
 from indico.util.string import remove_accents, str_to_ascii
+from wtforms.fields import BooleanField, StringField
+from wtforms.validators import DataRequired, Optional
 
 from indico_payment_opencollective import _
 from indico_payment_opencollective.blueprint import blueprint
-from indico_payment_opencollective.constants import OC_BASEURL, OC_STAGING_BASEURL
+from indico_payment_opencollective.constants import (OC_BASEURL,
+                                                     OC_STAGING_BASEURL)
+
 
 class PluginSettingsForm(PaymentPluginSettingsFormBase):
     collective_slug = StringField(_('Collective Slug'), [Optional()], description=_('Slug for Collective on Open Collective'))

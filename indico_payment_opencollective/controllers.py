@@ -7,19 +7,21 @@
 
 from flask import flash, redirect, request
 from flask_pluginengine import current_plugin
-from werkzeug.exceptions import BadRequest
-from gql import gql, Client
+from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
-
 from indico.modules.events.payment.models.transactions import TransactionAction
-from indico.modules.events.payment.notifications import notify_amount_inconsistency
+from indico.modules.events.payment.notifications import \
+    notify_amount_inconsistency
 from indico.modules.events.payment.util import register_transaction
-from indico.modules.events.registration.models.registrations import Registration
+from indico.modules.events.registration.models.registrations import \
+    Registration
 from indico.web.flask.util import url_for
 from indico.web.rh import RH
+from werkzeug.exceptions import BadRequest
 
 from indico_payment_opencollective import _
-from indico_payment_opencollective.constants import OC_API_BASEURL, OC_GQL_ORDER_QUERY
+from indico_payment_opencollective.constants import (OC_API_BASEURL,
+                                                     OC_GQL_ORDER_QUERY)
 
 oc_tx_order_status_action_mapping = {'PAID': TransactionAction.complete,
                                      'REJECTED': TransactionAction.reject,

@@ -8,11 +8,14 @@
 from unittest.mock import MagicMock
 
 import pytest
-from indico.modules.events.payment.models.transactions import PaymentTransaction
+from indico.modules.events.payment.models.transactions import \
+    PaymentTransaction
 
-from indico_payment_opencollective.controllers import RHOpenCollectivePostPaymentCallback
+from indico_payment_opencollective.controllers import \
+    RHOpenCollectivePostPaymentCallback
 from indico_payment_opencollective.plugin import OpenCollectivePaymentPlugin
-from tests.constants import GQL_QUERY_RESULT_MOCK, GQL_QUERY_RESULT_MOCK_1, GQL_QUERY_RESULT_MOCK_2
+from tests.constants import (GQL_QUERY_RESULT_MOCK, GQL_QUERY_RESULT_MOCK_1,
+                             GQL_QUERY_RESULT_MOCK_2)
 
 
 @pytest.mark.usefixtures('request_context')
