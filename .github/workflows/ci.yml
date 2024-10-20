@@ -2,7 +2,6 @@ name: CI
 
 env:
   PYTHON_VERSION: '3.12'
-  UV_SYSTEM_PYTHON: 1
 
 on:
   push:
@@ -36,6 +35,13 @@ jobs:
 
       - name: Set up Python
         run: uv python install ${{ env.PYTHON_VERSION }}
+      
+      - name: Setup and Activate virtualenv
+        run: |
+          uv venv venv --python ${{ env.PYTHON_VERSION }}
+          source venv/bin/activate
+          echo "VIRTUAL_ENV=$(pwd)/venv" >> $GITHUB_ENV
+          echo "$(pwd)/venv/bin" >> $GITHUB_PATH
 
       - name: Install system dependencies
         run: sudo apt-get install postgresql-client libpq-dev redis-server
@@ -89,6 +95,13 @@ jobs:
 
       - name: Set up Python
         run: uv python install ${{ env.PYTHON_VERSION }}
+      
+      - name: Setup and Activate virtualenv
+        run: |
+          uv venv venv --python ${{ env.PYTHON_VERSION }}
+          source venv/bin/activate
+          echo "VIRTUAL_ENV=$(pwd)/venv" >> $GITHUB_ENV
+          echo "$(pwd)/venv/bin" >> $GITHUB_PATH
 
       - name: Install system dependencies
         run: sudo apt-get install postgresql-client libpq-dev redis-server
