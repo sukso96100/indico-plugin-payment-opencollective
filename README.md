@@ -1,6 +1,6 @@
 # indico-plugin-payment-opencollective
 
-[![PyPI - Version](https://img.shields.io/pypi/v/indico-plugin-payment-opencollective)](https://pypi.org/project/indico-plugin-payment-opencollective/) [![CI](https://github.com/sukso96100/indico-plugin-payment-opencollective/actions/workflows/ci.yml/badge.svg)](https://github.com/sukso96100/indico-plugin-payment-opencollective/actions/workflows/ci.yml)
+[![PyPI - Version](https://img.shields.io/pypi/v/indico-plugin-payment-opencollective)](https://pypi.org/project/indico-plugin-payment-opencollective/) [![CI](https://github.com/sukso96100/indico-plugin-payment-opencollective/actions/workflows/ci.yml/badge.svg)](https://github.com/sukso96100/indico-plugin-payment-opencollective/actions/workflows/ci.yml) [![CD](https://github.com/sukso96100/indico-plugin-payment-opencollective/actions/workflows/cd.yml/badge.svg)](https://github.com/sukso96100/indico-plugin-payment-opencollective/actions/workflows/cd.yml)
 
 
 This plugin allows Open Collective to be used as payment method for paying registration fee on Indico. [Uses Open Collective's Post-Donation Redirect feature](https://docs.opencollective.com/help/contributing/development/post-donation-redirect) to handle payment. With this plugin, Usrs are redirected to specific event on collective on Open Collective then redirected back to Indico with transaction information from Open Collective.
