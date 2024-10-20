@@ -1,6 +1,6 @@
 [project]
 name = "indico-plugin-payment-opencollective"
-version = "0.1.0"
+version = "0.1.1"
 description = "Indico payment plugin for processing payment with Open Collective"
 license = {text = "MIT License"}
 authors = [{ name = 'Youngbin Han', email = 'ybhan@ubuntu.com' }]
