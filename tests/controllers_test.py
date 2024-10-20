@@ -39,6 +39,7 @@ def test_oc_verify_amount(mocker, gql_mock_data, expected):
 @pytest.mark.parametrize(('gql_mock_data', 'expected'), (
     (GQL_QUERY_RESULT_MOCK, True),
     (GQL_QUERY_RESULT_MOCK_1, False),
+    (GQL_QUERY_RESULT_MOCK_2, False),
 ))
 def test_oc_is_transaction_duplicated(mocker, gql_mock_data, expected):
     mock_client = MagicMock()
