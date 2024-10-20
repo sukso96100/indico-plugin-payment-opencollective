@@ -7,9 +7,20 @@ This plugin allows Open Collective to be used as payment method for paying regis
 
 [**See how it works with short demo video**](https://youtu.be/FnMXnVP1xwA)
 
-## Installing
+## Installation
 
-### For testing inside Indico development environment
+Install the plugin [package](https://pypi.org/project/indico-plugin-payment-opencollective/) from PyPI
+```bash
+pip install indico-plugin-payment-opencollective
+```
+
+Open `indico.conf` of your indico installation then add `payment_opencollective` on `PLUGIN`.
+```python
+PLUGINS = { ... , 'payment_opencollective'}
+```
+
+## Install for development for contributing to this plugin
+
 Clone this repository on `~/dev/indico/plugins`
 ```bash
 git clone https://github.com/ubucon-asia/indico-plugin-payment-opencollective.git
@@ -25,8 +36,7 @@ Open `indico.conf` which should be located in `~/dev/indico/src/indico` then add
 PLUGINS = { ... , 'payment_opencollective'}
 ```
 
-### For production
-TBD
+You can now test you modification on your development indico environment.
 
 ## Configuration
 On your Indico event item admin page, Go to `Features` then enable `Payment` feature.
