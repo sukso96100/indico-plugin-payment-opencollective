@@ -1,5 +1,4 @@
 
-from flask_pluginengine import render_plugin_template
 from indico.core.plugins import IndicoPlugin, url_for_plugin
 from indico.modules.events.payment import (PaymentEventSettingsFormBase,
                                            PaymentPluginMixin,
