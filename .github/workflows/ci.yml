@@ -1,0 +1,119 @@
+name: CI
+
+env:
+  PYTHON_VERSION: '3.12'
+  UV_SYSTEM_PYTHON: 1
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test-plugin:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Install system dependencies
+        run: sudo apt-get install postgresql-client libpq-dev redis-server
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install Indico
+        run: |
+          uv pip install -U pip setuptools wheel
+          uv pip install Babel
+          uv pip install "indico[dev] @ git+https://github.com/indico/indico.git"
+
+      - name: Install node dependencies
+        run: npm ci
+      
+      - name: Install plugin
+        run: |
+          uv pip install -e .
+
+      - name: Setup database
+        run: |
+          export PGHOST=localhost
+          export PGPORT=${{ job.services.postgres.ports[5432] }}
+          export PGUSER=postgres
+          createuser indicotest
+          createdb -O indicotest indicotest
+          psql indicotest -c 'CREATE EXTENSION unaccent;'
+          psql indicotest -c 'CREATE EXTENSION pg_trgm;'
+
+      - name: Run tests
+        run: |
+            export INDICO_TEST_DATABASE_URI="postgresql://indicotest@localhost:${{ job.services.postgres.ports[5432] }}/indicotest"
+            pytest tests/ --color=yes
+
+
+  lint:
+    runs-on: ubuntu-24.04
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Install system dependencies
+        run: sudo apt-get install postgresql-client libpq-dev redis-server
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install Indico
+        run: |
+          uv pip install -U pip setuptools wheel
+          uv pip install Babel isort ruff
+          uv pip install "indico[dev] @ git+https://github.com/indico/indico.git"
+
+      - name: Install node dependencies
+        run: npm ci
+
+      - name: Check import sorting
+        if: success() || failure()
+        run: isort --diff --check-only .
+
+      - name: Run ruff
+        if: success() || failure()
+        run: |
+          ruff check --output-format github .
+
+  
